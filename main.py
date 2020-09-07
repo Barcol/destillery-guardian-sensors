@@ -2,9 +2,10 @@ import json
 from time import sleep
 
 import requests
-
 from sensors import Sensors
+from hardware_controller import HardwareController
 
+hardware_controller = HardwareController()
 sensors = Sensors()
 
 
@@ -13,12 +14,8 @@ def send_results(session_id, results):
                   data=json.dumps(results))
 
 
-def stop_heating():
-    print("BRRR, wyłączam grzałkę")
-
-
 def stop_session(session_id, message):
-    stop_heating()
+    hardware_controller.stop_heating()
     requests.put(f"http://127.0.0.1:8000/sessions/{session_id}/finish",
                  data=json.dumps({"termination_reason": message}))
 
