@@ -9,13 +9,25 @@ hardware_controller = HardwareController()
 sensors = Sensors()
 
 
+def cool_hardware_down():
+    print("Trwa kończenie pracy systemu.")
+    hardware_controller.stop_heating()
+    print("Trwa wychładzanie par. Potrwa minutę.")
+    sleep(60)
+    hardware_controller.stop_water_cooling()
+    print("Trwa zamykanie przeływu w chłodnicy. Potrwa 15 sekund.")
+    sleep(15)
+    hardware_controller.cleanup_pins()
+    print("Zakończono pracę systemu")
+
+
 def send_results(session_id, results):
     requests.post(f"http://127.0.0.1:8000/sessions/{session_id}/results",
                   data=json.dumps(results))
 
 
 def stop_session(session_id, message):
-    hardware_controller.stop_heating()
+    cool_hardware_down()
     requests.put(f"http://127.0.0.1:8000/sessions/{session_id}/finish",
                  data=json.dumps({"termination_reason": message}))
 
@@ -36,6 +48,9 @@ def handle_results(session_id, results):
 
 def handle_session(session):
     print("Znaleziono trwającą sesję: ", session["name"])
+    hardware_controller.start_water_cooling()
+    hardware_controller.start_heating()
+
     while not session["is_finished"]:
         sleep(session["time_interval"])
         handle_results(session['id'], sensors.results())
@@ -52,7 +67,8 @@ def main():
                     handle_session(session)
             sleep(5)
     except KeyboardInterrupt:
-        print("Ręcznie zatrzymano pracę systemu.")
+        print("Ręczne zatrzymanie.")
+        cool_hardware_down()
 
 
 if __name__ == "__main__":
