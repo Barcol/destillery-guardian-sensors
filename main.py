@@ -10,7 +10,6 @@ sensors = Sensors()
 
 
 def cool_hardware_down():
-    hardware_controller = HardwareController()
     print("Trwa kończenie pracy systemu.")
     hardware_controller.stop_heating()
     print("Trwa wychładzanie par. Potrwa minutę.")
@@ -18,7 +17,6 @@ def cool_hardware_down():
     hardware_controller.stop_water_cooling()
     print("Trwa zamykanie przepływu w chłodnicy. Potrwa 15 sekund.")
     sleep(15)
-    hardware_controller.cleanup_pins()
     print("Zakończono pracę systemu")
 
 
@@ -72,6 +70,7 @@ def main():
     except KeyboardInterrupt:
         print("Ręczne zatrzymanie.")
         cool_hardware_down()
+        hardware_controller.cleanup_pins()
 
 
 if __name__ == "__main__":
