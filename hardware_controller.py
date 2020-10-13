@@ -10,19 +10,19 @@ class HardwareController:
 
     def start_water_cooling(self):
         print("Chłodzenie ON")
-        GPIO.output(17, 1)
+        GPIO.output(17, 0)
 
     def stop_water_cooling(self):
         print("Chłodzenie OFF")
-        GPIO.output(17, 0)
+        GPIO.output(17, 1)
 
     def start_heating(self):
         print("Grzałka ON")
-        GPIO.output(27, 1)
+        GPIO.output(27, 0)
 
     def stop_heating(self):
         print("Grzałka OFF")
-        GPIO.output(27, 0)
+        GPIO.output(27, 1)
 
     def cleanup_pins(self):
         GPIO.cleanup()
