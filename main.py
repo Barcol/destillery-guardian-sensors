@@ -10,12 +10,13 @@ sensors = Sensors()
 
 
 def cool_hardware_down():
+    hardware_controller = HardwareController()
     print("Trwa kończenie pracy systemu.")
     hardware_controller.stop_heating()
     print("Trwa wychładzanie par. Potrwa minutę.")
     sleep(60)
     hardware_controller.stop_water_cooling()
-    print("Trwa zamykanie przeływu w chłodnicy. Potrwa 15 sekund.")
+    print("Trwa zamykanie przepływu w chłodnicy. Potrwa 15 sekund.")
     sleep(15)
     hardware_controller.cleanup_pins()
     print("Zakończono pracę systemu")
@@ -55,6 +56,8 @@ def handle_session(session):
         sleep(session["time_interval"])
         handle_results(session['id'], sensors.results())
         session = requests.get(f"http://127.0.0.1:8000/sessions/{session['id']}").json()
+        
+    cool_hardware_down()
 
 
 def main():
